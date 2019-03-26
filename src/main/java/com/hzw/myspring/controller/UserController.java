@@ -20,8 +20,8 @@ public class UserController {
     private UserService userService;
 
     @MyRequestMapping("/test")
-    public String test(@MyRequestParam("userId") String userId, @MyRequestParam("age") Integer age){
-        String str = ">>>>>>>> " + userId + " >>>>>>>> " + age;
+    public String test(@MyRequestParam("userId") String userId, @MyRequestParam("age") Integer age, @MyRequestParam("time") Long time){
+        String str = ">>>>>>>> " + userId + " >>>>>>>> " + age + " >>>>>>>> " + time;
         System.out.println(str);
         userService.userTest();
         return str;

@@ -1,6 +1,8 @@
 package com.hzw.myspring.myframwork.servlet;
 
 import com.hzw.myspring.myframwork.annotation.*;
+import com.hzw.myspring.myframwork.enums.TypeConvertEnum;
+import com.hzw.myspring.myframwork.enums.TypeConverter;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -321,7 +323,13 @@ public class DispatcherServlet extends HttpServlet {
             if(!handler.paramIndexMapping.containsKey(parm.getKey())){continue;}
 
             int index = handler.paramIndexMapping.get(parm.getKey());
-            paramValues[index] = convert(paramTypes[index],value);
+            //类型不一样才需要转换
+            if (paramTypes[index] != value.getClass()){
+                paramValues[index] = convert(paramTypes[index],value);
+            }else{
+                paramValues[index] = value;
+            }
+
         }
 
         if(handler.paramIndexMapping.containsKey(HttpServletRequest.class.getName())) {
@@ -357,16 +365,9 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private Object convert(Class<?> type,String value){
-        //如果是int
-        if(Integer.class == type){
-            return Integer.valueOf(value);
-        }
-        else if(Double.class == type){
-            return Double.valueOf(value);
-        }
-        //如果还有double或者其他类型，继续加if
-        //这时候，我们应该想到策略模式了
-        //在这里暂时不实现，希望小伙伴自己来实现
-        return value;
+        TypeConvertEnum typeConvertEnum = TypeConvertEnum.getByClazz(type);
+        //策略+单例模式类型转换器实现
+        TypeConverter typeConverter = typeConvertEnum.getTypeConverter();
+        return typeConverter.convert(value);
     }
 }
