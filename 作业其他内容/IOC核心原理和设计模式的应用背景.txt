@@ -1,0 +1,33 @@
+一、IOC核心原理
+1.IOC(Inversion of Control)控制反转:
+所谓控制反转，就是把原先我们代码里面需要实现的对象创建、依赖的代码，反转给容器来帮忙实现。
+换句话说,就是把创建对象的控制权反转给了容器。
+
+2.DI(Dependency Injection)依赖注入:
+就是指对象是被动接受依赖类而不是自己主动去找，
+换句话说,就是指对象不是从容器中查找它依赖的类，
+而是在容器实例化对象的时候,主动将它依赖的类注入给它。
+
+二、设计模式应用
+1.Spring Bean 的创建是典型的工厂模式，这一系列的 Bean 工厂，也即 IOC 容器
+为开发者管理对象间的依赖关系提供了很多便利和基础服务。
+
+2.AnnotationConfigApplicationContext、FileSystemXmlApplicationContext、XmlWebApplicationContext 等,
+都继承自父容器 AbstractApplicationContext, 主要用到了 装饰器模式 和 策略模式, 最终都是调用 refresh()方法。
+
+3.??? AbstractApplicationContext 使用了委派设计模式（???），
+父类定义了抽象的refreshBeanFactory()方法，具体实现调用子类容器的 refreshBeanFactory()方法。
+
+4.??? AbstractRefreshableApplicationContext调用载入 Bean 定义的方法，主要这里又使用了一个委派模式（???），
+在当前类中只定义了抽象的 loadBeanDefinitions 方法，具体的实现调用子类容器。
+
+5.XmlBeanDefinitionReader 使用了委派模式, BeanDefinitionDocumentReader 只是个接口,
+解析过程是在实现类 DefaultBeanDefinitionDocumentReader 中实现。
+
+6.FactoryBean 接口 使用了工厂模式,当使用容器中 FactoryBean 的时候，该容器不会返回 FactoryBean 本身,
+而是返回其生成的对象。
+Spring 包括了大部分的通用资源和服务访问抽象的 FactoryBean 的实现,
+其中包括:对 JNDI 查询的处理，对代理对象的处理, 对事务性代理的处理, 对 RMI 代理的处理等,
+这些我们都可以看成是具体的工厂, 看成是 Spring 为我们建立好的工厂。
+也就是说 Spring 通过使用 抽象工厂模式 为我们准备了一系列工厂来生产一些特定的对象,
+免除我们手工重复的工作, 我们要使用时只需要在 IOC 容器里配置好就能很方便的使用了。
